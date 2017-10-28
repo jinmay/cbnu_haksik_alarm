@@ -2,31 +2,31 @@ from django.db import models
 
 class Main(models.Model):
     number = models.IntegerField()
-    day = models.TextField()
+    menu = models.TextField()
 
     def __str__(self):
-        return self.day
+        return self.menu
 
 
 class Yangsung(models.Model):
     number = models.IntegerField()
-    day = models.TextField()
+    menu = models.TextField()
 
     def __str__(self):
-        return self.day
+        return self.menu
 
 
 class Yangjin(models.Model):
     number = models.IntegerField()
-    day = models.TextField()
+    menu = models.TextField()
 
     def __str__(self):
-        return self.day
+        return self.menu
 
 
 class Crj(models.Model):
     number = models.IntegerField()
-    day = models.TextField()
+    menu = models.TextField()
 
     def __str__(self):
-        return self.day
+        return self.menu

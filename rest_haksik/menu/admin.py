@@ -4,23 +4,23 @@ from .models import Main, Yangjin, Yangsung, Crj
 
 @admin.register(Main)
 class MainAdmin(admin.ModelAdmin):
-    list_display = ['number', 'day']
-    list_display_links = ['day']
+    list_display = ['number', 'menu']
+    list_display_links = ['menu']
 
 
 @admin.register(Yangsung)
 class YangsungAdmin(admin.ModelAdmin):
-    list_display = ['number', 'day']
-    list_display_links = ['day']
+    list_display = ['number', 'menu']
+    list_display_links = ['menu']
 
 
 @admin.register(Yangjin)
 class YangjinAdmin(admin.ModelAdmin):
-    list_display = ['number', 'day']
-    list_display_links = ['day']
+    list_display = ['number', 'menu']
+    list_display_links = ['menu']
 
 
 @admin.register(Crj)
 class CrjAdmin(admin.ModelAdmin):
-    list_display = ['number', 'day']
-    list_display_links = ['day']
+    list_display = ['number', 'menu']
+    list_display_links = ['menu']
