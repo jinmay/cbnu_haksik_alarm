@@ -18,7 +18,7 @@ def main_crawling(request):
             main_menus[day].find_all('td')[2].get_text("\n").strip(),
             main_menus[day].find_all('td')[3].get_text("\n").strip())
 
-        main = Main(number = day, day = main_menu)
+        main = Main(number = day, menu = main_menu)
         main.save()
 
     return HttpResponse(status=200)
@@ -38,7 +38,7 @@ def jin_crawling(request):
             jin_menus[day].find_all('td')[2].get_text("\n").strip(),
             jin_menus[day].find_all('td')[3].get_text("\n").strip())
 
-        jin = Yangjin(number = day, day = jin_menu)
+        jin = Yangjin(number = day, menu = jin_menu)
         jin.save()
 
     return HttpResponse(status=200)
@@ -58,7 +58,7 @@ def sung_crawling(request):
             sung_menus[day].find_all('td')[2].get_text("\n").strip(),
             sung_menus[day].find_all('td')[3].get_text("\n").strip())
 
-        sung = Yangsung(number = day, day = sung_menu)
+        sung = Yangsung(number = day, menu = sung_menu)
         sung.save()
 
     return HttpResponse(status=200)
@@ -78,7 +78,7 @@ def crj_crawling(request):
             crj_menus[day].find_all('p')[2].get_text().replace(',', "\n").strip(),
             crj_menus[day].find_all('p')[3].get_text().replace(',', "\n").strip())
 
-        crj = Crj(number = day, day = crj_menu)
+        crj = Crj(number = day, menu = crj_menu)
         crj.save()
 
     return HttpResponse(status=200)
