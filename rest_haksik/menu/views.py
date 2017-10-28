@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,8 +20,20 @@ def keyboard(request):
 
 class Answer(APIView):
     dorm = ['중문기숙사', '양진재', '양성재', '청람재']
-    week = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
+    week = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일', '기숙사선택']
     selected_dorm = ""
+
+    # 오늘이 몇 일 무슨 요일인지 문자열로 리턴
+    def today_date(self):
+        year = timezone.now().year
+        month = timezone.now().month
+        day = timezone.now().day
+        date = timezone.now().weekday()
+        date_list = ['월', '화', '수', '목', '금', '토', '일']
+
+        today_str = "오늘은 {}년 {}월 {}일\n{}요일 입니다.".format(year, month, day, date_list[date])
+
+        return today_str
 
     def post(self, request, format=None):
         rawdata = self.request.data
@@ -45,7 +59,7 @@ class Answer(APIView):
         if content in Answer.dorm:
             Answer.selected_dorm = content
             keyboard = {
-                "message": content,
+                "message": content + "\n\n" + self.today_date(),
                 "keyboard": Answer.week
             }
             return Response(keyboard, status=status.HTTP_200_OK)
