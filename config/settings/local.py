@@ -10,6 +10,7 @@ Local settings for rest_haksik project.
 """
 
 from .base import *  # noqa
+import os
 
 # DEBUG
 # ------------------------------------------------------------------------------
@@ -20,7 +21,7 @@ TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Note: This key only used for development and testing.
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='LKTC^Eu<<$(in;vIU&$m0FSf8%e7Xo^NSHJa$tf/M~nM9T7nBE')
+SECRET_KEY = os.environ["REST_HAKSIK"]
 
 # Mail settings
 # ------------------------------------------------------------------------------
