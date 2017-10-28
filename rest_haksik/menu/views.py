@@ -68,3 +68,18 @@ class Answer(APIView):
             menu = show_menu(Answer.selected_dorm, content)
             serializer = MenuSerializer(menu)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+# 친구 추가 / 삭제
+class Friend(APIView):
+    def get(self, request, format=None):
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, format=None):
+        return Response(status=status.HTTP_200_OK)
+
+
+# 채팅방 나가기
+@api_view(['DELETE'])
+def leave_chatroom(request):
+    return Response(status=status.HTTP_200_OK)

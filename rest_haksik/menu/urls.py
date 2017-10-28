@@ -13,5 +13,6 @@ urlpatterns = [
     # For Kakaotalk auto reply
     url(r'^keyboard$', views.keyboard, name="keyboard"),
     url(r'^message$', views.Answer.as_view(), name="answer"),
-
+    url(r'^friend$', views.Friend.as_view(), name="friends"),
+    url(r'^leave$', views.leave_chatroom, name="chatroom"),
 ]
