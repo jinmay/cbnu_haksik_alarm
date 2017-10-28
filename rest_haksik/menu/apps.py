@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class MenuConfig(AppConfig):
-    name = 'menu'
+    name = 'rest_haksik.menu'
