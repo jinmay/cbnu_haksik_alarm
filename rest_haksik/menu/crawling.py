@@ -1,5 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
+from django.http import HttpResponse
+from .models import Main, Yangjin, Yangsung, Crj
+
 
 # 중문기숙사
 def main_crawling(request):
@@ -18,7 +21,7 @@ def main_crawling(request):
         main = Main(number = day, day = main_menu)
         main.save()
 
-    return HttpResponse()
+    return HttpResponse(status=200)
 
 
 # 양진재
@@ -38,7 +41,7 @@ def jin_crawling(request):
         jin = Yangjin(number = day, day = jin_menu)
         jin.save()
 
-    return HttpResponse()
+    return HttpResponse(status=200)
 
 
 # 양성재
@@ -58,7 +61,7 @@ def sung_crawling(request):
         sung = Yangsung(number = day, day = sung_menu)
         sung.save()
 
-    return HttpResponse()
+    return HttpResponse(status=200)
 
 
 # 청람재
@@ -78,4 +81,4 @@ def crj_crawling(request):
         crj = Crj(number = day, day = crj_menu)
         crj.save()
 
-    return HttpResponse()
+    return HttpResponse(status=200)
