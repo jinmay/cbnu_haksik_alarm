@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^menu/', include('rest_haksik.menu.urls', namespace="menu")),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
