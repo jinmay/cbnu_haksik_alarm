@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view 
+from rest_framework.decorators import api_view
 
 from .models import Main, Yangsung, Yangjin, Crj
 from .serializers import MenuSerializer
@@ -26,6 +26,7 @@ class Answer(APIView):
         user_key = rawdata.get("user_key", None)
         content = rawdata.get("content", None)
 
+        # 기숙사별 해당 요일 메뉴 리턴
         def show_menu(dorm, weekday):
             day_dict = {key: index for index, key in enumerate(Answer.week, 1)}
             if dorm == "청람재":
