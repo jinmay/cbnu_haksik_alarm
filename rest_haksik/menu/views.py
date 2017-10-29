@@ -1,4 +1,4 @@
-from django.utils import timezone
+import datetime
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -25,10 +25,10 @@ class Answer(APIView):
 
     # 오늘이 몇 일 무슨 요일인지 문자열로 리턴
     def today_date(self):
-        year = timezone.localdate().year
-        month = timezone.localdate().month
-        day = timezone.localdate().day
-        date = timezone.localdate().weekday()
+        year = datetime.datetime.now().year
+        month = datetime.datetime.now().month
+        day = datetime.datetime.now().day
+        date = datetime.datetime.now().weekday()
         date_list = ['월', '화', '수', '목', '금', '토', '일']
 
         today_str = "오늘은 {}년 {}월 {}일\n{}요일 입니다.".format(year, month, day, date_list[date])
