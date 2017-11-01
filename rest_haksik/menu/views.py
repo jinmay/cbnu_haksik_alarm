@@ -52,6 +52,18 @@ class Answer(APIView):
         elif dorm == "청람재":
             return Crj.objects.get(number=day_dict[weekday])
 
+    def show_keyboard(self, keyboard_buttons):
+        keyboard = {
+            "message": {
+                "text": None
+            },
+            "keyboard": {
+                "type": "buttons",
+                "buttons": keyboard_buttons
+            }
+        }
+        return keyboard
+
     def post(self, request, format=None):
         rawdata = self.request.data
         user_key = rawdata.get("user_key", None)
@@ -60,38 +72,24 @@ class Answer(APIView):
         # 기숙사의 종류를 선택했을 때
         if content in Answer.dorm:
             Answer.selected_dorm = content
-            keyboard = {
-                "message": {
-                    "text": content + "\n\n" + self.today_date(),
-                },
-                "keyboard": {
-                    "type": "buttons",
-                    "buttons": Answer.week
-                }
-            }
+
+            keyboard = self.show_keyboard(Answer.week)
+            keyboard["message"]["text"] = content + "\n\n" + self.today_date()
+
             return Response(keyboard, status=status.HTTP_200_OK)
         elif content == "기숙사 선택":
-            keyboard = {
-                "message": {
-                    "text": content,
-                },
-                "keyboard": {
-                    "type": "buttons",
-                    "buttons": Answer.dorm
-                }
-            }
+            keyboard = self.show_keyboard(Answer.dorm)
+            keyboard["message"]["text"] = content
+
             return Response(keyboard, status=status.HTTP_200_OK)
         # 요일 선택시
         elif content in Answer.week:
             menu = self.show_menu(Answer.selected_dorm, content)
             serializer = MenuSerializer(menu)
-            keyboard = {
-                "message": serializer.data,
-                "keyboard": {
-                    "type": "buttons",
-                    "buttons": Answer.week
-                }
-            }
+
+            keyboard = self.show_keyboard(Answer.week)
+            keyboard["message"] = serializer.data
+
             return Response(keyboard, status=status.HTTP_200_OK)
 
 
@@ -101,10 +99,10 @@ class Friend(APIView):
         return Response(status=status.HTTP_200_OK)
 
     def delete(self, request, format=None):
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # 채팅방 나가기
 @api_view(['DELETE'])
 def leave_chatroom(request):
-    return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_204_NO_CONTENT)
