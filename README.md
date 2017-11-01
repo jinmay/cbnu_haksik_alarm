@@ -9,6 +9,7 @@ Python으로 만든 카카오톡 자동응답기입니다. 사용 라이브러�
 5. Django 1.10 ( django-rest-framework )
 6. BeautifulSoup4
 7. KakaoTalk Auto Reply API
+8. Cookie-cutter 
 
 기존에 한 학기동안 운영해던 식단알리미를 DRF를 이용하여 코드를 정리하였습니다.
 
@@ -25,3 +26,5 @@ There are development environment and library used below.
 5. Django 1.10 ( django-rest-framework )
 6. BeautifulSoup4
 7. KakaoTalk Auto Reply API
+8. Cookie-cutter 
+
