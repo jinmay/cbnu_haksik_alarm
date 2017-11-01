@@ -99,10 +99,10 @@ class Friend(APIView):
         return Response(status=status.HTTP_200_OK)
 
     def delete(self, request, format=None):
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # 채팅방 나가기
 @api_view(['DELETE'])
 def leave_chatroom(request):
-    return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_204_NO_CONTENT)
