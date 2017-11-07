@@ -1,6 +1,9 @@
 from django.contrib import admin
 
-from .models import Main, Yangjin, Yangsung, Crj
+from .models import (
+                Main, Yangjin, Yangsung, Crj,
+                Star
+            )
 
 @admin.register(Main)
 class MainAdmin(admin.ModelAdmin):
@@ -24,3 +27,8 @@ class YangjinAdmin(admin.ModelAdmin):
 class CrjAdmin(admin.ModelAdmin):
     list_display = ['number', 'menu']
     list_display_links = ['menu']
+
+
+@admin.register(Star)
+class StarAdmin(admin.ModelAdmin):
+    pass

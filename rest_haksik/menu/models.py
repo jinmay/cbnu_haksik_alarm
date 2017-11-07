@@ -30,3 +30,10 @@ class Crj(models.Model):
 
     def __str__(self):
         return self.menu
+
+
+class Star(models.Model):
+    menu = models.TextField()
+
+    def __str__(self):
+        return self.menu
