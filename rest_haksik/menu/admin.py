@@ -2,7 +2,8 @@ from django.contrib import admin
 
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
-                Star
+                Star,
+                User
             )
 
 @admin.register(Main)
@@ -32,3 +33,8 @@ class CrjAdmin(admin.ModelAdmin):
 @admin.register(Star)
 class StarAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ['key', 'dorm']
