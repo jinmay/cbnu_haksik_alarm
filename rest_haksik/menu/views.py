@@ -7,7 +7,8 @@ from rest_framework.decorators import api_view
 
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
-                Star
+                Star,
+                User
             )
 from .serializers import MenuSerializer
 
@@ -75,14 +76,25 @@ class Answer(APIView):
         }
         return keyboard
 
+    def get_user(self, key):
+        try:
+            user = User.objects.get(key=key)
+        except User.DoesNotExist:
+            user = User.objects.create(key=key)
+        return user
+
     def post(self, request, format=None):
         rawdata = self.request.data
         user_key = rawdata.get("user_key", None)
         content = rawdata.get("content", None)
 
+        user = self.get_user(user_key)
+
         # 기숙사의 종류를 선택했을 때
         if content in Answer.unidorm:
-            Answer.selected_dorm = content
+            # Answer.selected_dorm = content
+            user.dorm = content
+            user.save()
 
             keyboard = self.show_keyboard(Answer.week)
             keyboard["message"]["text"] = content + "\n\n" + self.today_date()
@@ -96,7 +108,8 @@ class Answer(APIView):
             return Response(keyboard, status=status.HTTP_200_OK)
         # 요일 선택시
         elif content in Answer.week:
-            dorm_menu = self.show_menu(Answer.selected_dorm, content)
+            dorm = user.dorm
+            dorm_menu = self.show_menu(dorm, content)
             serializer = MenuSerializer(dorm_menu)
 
             keyboard = self.show_keyboard(Answer.week)
