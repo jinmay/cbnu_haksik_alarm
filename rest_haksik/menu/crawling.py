@@ -1,7 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 from django.http import HttpResponse
-from .models import Main, Yangjin, Yangsung, Crj
+from .models import (
+                Main, Yangjin, Yangsung, Crj,
+                Galaxy,
+            )
 
 
 # 중문기숙사
@@ -73,12 +76,31 @@ def crj_crawling(request):
     crj_menus = crj_html.select('div.food_week_box')
 
     for day in range(7):
-        crj_menu = crj = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(crj_menus[day].find_all('p')[0].get_text().strip(),
+        crj_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(crj_menus[day].find_all('p')[0].get_text().strip(),
             crj_menus[day].find_all('p')[1].get_text().replace(',', "\n").strip(),
             crj_menus[day].find_all('p')[2].get_text().replace(',', "\n").strip(),
             crj_menus[day].find_all('p')[3].get_text().replace(',', "\n").strip())
 
         crj = Crj(number = day, menu = crj_menu)
         crj.save()
+
+    return HttpResponse(status=200)
+
+
+# 은하수식당
+def galaxy_crawling(request):
+    Galaxy.objects.all().delete()
+    galaxy_url = 'http://coop.cbnu.ac.kr/m0304'
+    galaxy_response = requests.get(galaxy_url)
+    bsobj = BeautifulSoup(galaxy_response.content, 'lxml')
+
+    tr_list = bsobj.select("table tbody tr")
+    lunch_row = tr_list[1].select("td")[2:]
+    dinner_row = tr_list[3].select("td")[2:]
+
+    for index, (lunch, dinner) in enumerate(zip(lunch_row, dinner_row)):
+        galaxy_menu = "[점심]\n{}\n\n[저녁]\n{}".format(lunch.get_text().strip(), dinner.get_text().strip())
+        galaxy = Galaxy(number = index, menu = galaxy_menu)
+        galaxy.save()
 
     return HttpResponse(status=200)
