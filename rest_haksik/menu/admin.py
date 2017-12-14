@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
-                Star,
+                Star, Galaxy,
                 User
             )
 
@@ -33,6 +33,12 @@ class CrjAdmin(admin.ModelAdmin):
 @admin.register(Star)
 class StarAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Galaxy)
+class GalaxyAdmin(admin.ModelAdmin):
+    list_display = ['number', 'menu']
+    list_display_links = ['menu']
 
 
 @admin.register(User)
