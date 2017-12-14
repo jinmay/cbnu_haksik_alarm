@@ -95,6 +95,7 @@ def galaxy_crawling(request):
     bsobj = BeautifulSoup(galaxy_response.content, 'lxml')
 
     tr_list = bsobj.select("table tbody tr")
+    price = tr_list[1].select("td")[1].get_text()
     lunch_row = tr_list[1].select("td")[2:]
     dinner_row = tr_list[3].select("td")[2:]
 
