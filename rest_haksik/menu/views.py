@@ -101,22 +101,6 @@ class Answer(APIView):
             keyboard["message"]["text"] = content + "\n\n" + self.today_date()
 
             return Response(keyboard, status=status.HTTP_200_OK)
-        # "기숙사 선택"을 눌렀을때
-        elif content == "기숙사 선택":
-            keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall)
-            keyboard["message"]["text"] = content
-
-            return Response(keyboard, status=status.HTTP_200_OK)
-        # 요일 선택시
-        elif content in Answer.week:
-            dorm = user.dorm
-            dorm_menu = self.show_menu(dorm, content)
-            serializer = MenuSerializer(dorm_menu)
-
-            keyboard = self.show_keyboard(Answer.week)
-            keyboard["message"] = serializer.data
-
-            return Response(keyboard, status=status.HTTP_200_OK)
         # 별빛식당 선택시
         elif content == "별빛식당":
             newhall_menu = self.show_newhall(content)
@@ -132,6 +116,26 @@ class Answer(APIView):
 
             keyboard = self.show_keyboard(Answer.newhall_week)
             keyboard["message"]["text"] = content + "\n\n" + self.today_date()
+
+            return Response(keyboard, status=status.HTTP_200_OK)
+        # "기숙사 선택"을 눌렀을때
+        elif content == "기숙사 선택":
+            keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall)
+            keyboard["message"]["text"] = content
+
+            return Response(keyboard, status=status.HTTP_200_OK)
+        # 요일 선택시
+        elif content in Answer.week:
+            dorm = user.dorm
+            dorm_menu = self.show_menu(dorm, content)
+            serializer = MenuSerializer(dorm_menu)
+
+            keyboard = self.show_keyboard(Answer.week)
+            # 은하수식당은 '토요일'과 '일요일'이 보이면 안되기 때문
+            # 임시코드 
+            if user.dorm == "은하수식당":
+                keyboard = self.show_keyboard(Answer.newhall_week)
+            keyboard["message"] = serializer.data
 
             return Response(keyboard, status=status.HTTP_200_OK)
 
