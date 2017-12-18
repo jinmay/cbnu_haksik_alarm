@@ -35,7 +35,7 @@ def jin_crawling(request):
     jin_html = BeautifulSoup(jin_response.content, 'lxml', from_encoding="utf-8")
     jin_menus = jin_html.select('tr')[1:8]
 
-    for day in range(7):
+    for day in range(6):
         jin_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(jin_menus[day].find_all('td')[0].get_text().strip(),
             jin_menus[day].find_all('td')[1].get_text("\n").strip(),
             jin_menus[day].find_all('td')[2].get_text("\n").strip(),
@@ -55,7 +55,7 @@ def sung_crawling(request):
     sung_html = BeautifulSoup(sung_response.content, 'lxml', from_encoding="utf-8")
     sung_menus = sung_html.select('tr')[1:8]
 
-    for day in range(7):
+    for day in range(6):
         sung_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(sung_menus[day].find_all('td')[0].get_text().strip(),
             sung_menus[day].find_all('td')[1].get_text("\n").strip(),
             sung_menus[day].find_all('td')[2].get_text("\n").strip(),
