@@ -43,6 +43,10 @@ class Answer(APIView):
 
     # 기숙사별 해당 요일 메뉴 리턴
     def show_menu(self, dorm, weekday):
+        '''
+            청람재와 신학생회관의 경우 월요일: 0 / 일요일: 6
+            학교기숙사의 경우 월요일: 1 / 일요일: 0
+        '''
         day_dict = {key: index for index, key in enumerate(Answer.week, 1)}
         day_dict['일요일'] = 0
         if dorm == "청람재" or dorm == "은하수식당":
