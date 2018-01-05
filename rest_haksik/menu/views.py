@@ -10,14 +10,16 @@ from .models import (
                 Star, Galaxy,
                 User
             )
+from rest_haksik.weather import models as weather_models
 from .serializers import MenuSerializer
+from rest_haksik.weather import serializers as weather_serializers
 
 
 @api_view(['GET'])
 def keyboard(request):
     keyboard = {
         "type": "buttons",
-        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당']
+        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당', '현재기온']
     }
     return Response(data=keyboard, status=status.HTTP_200_OK)
 
@@ -27,6 +29,7 @@ class Answer(APIView):
     newhall = ['별빛식당', '은하수식당']
     week = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일', '기숙사 선택']
     newhall_week = ['월요일', '화요일', '수요일', '목요일', '금요일', '기숙사 선택']
+    temp_now = ['현재기온']
 
     # 오늘이 몇 일 무슨 요일인지 문자열로 리턴
     def today_date(self):
@@ -43,6 +46,10 @@ class Answer(APIView):
 
     # 기숙사별 해당 요일 메뉴 리턴
     def show_menu(self, dorm, weekday):
+        '''
+            청람재와 신학생회관의 경우 월요일: 0 / 일요일: 6
+            학교기숙사의 경우 월요일: 1 / 일요일: 0
+        '''
         day_dict = {key: index for index, key in enumerate(Answer.week, 1)}
         day_dict['일요일'] = 0
         if dorm == "청람재" or dorm == "은하수식당":
@@ -84,6 +91,10 @@ class Answer(APIView):
             user = User.objects.create(key=key)
         return user
 
+    def get_temp(self):
+        temp = float(weather_models.Weather.objects.last().temp)
+        return temp
+
     def post(self, request, format=None):
         rawdata = self.request.data
         user_key = rawdata.get("user_key", None)
@@ -120,7 +131,7 @@ class Answer(APIView):
             return Response(keyboard, status=status.HTTP_200_OK)
         # "기숙사 선택"을 눌렀을때
         elif content == "기숙사 선택":
-            keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall)
+            keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
             keyboard["message"]["text"] = content
 
             return Response(keyboard, status=status.HTTP_200_OK)
@@ -136,6 +147,14 @@ class Answer(APIView):
             if user.dorm == "은하수식당":
                 keyboard = self.show_keyboard(Answer.newhall_week)
             keyboard["message"] = serializer.data
+
+            return Response(keyboard, status=status.HTTP_200_OK)
+        # 현재기온 선택시
+        elif content == "현재기온":
+            temp = self.get_temp()
+            ment = "청주시의 현재 기온은 {}입니다.".format(temp)
+            keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
+            keyboard["message"]["text"] = ment
 
             return Response(keyboard, status=status.HTTP_200_OK)
 
