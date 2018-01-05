@@ -57,7 +57,8 @@ LOCAL_APPS = [
     # custom users app
     'rest_haksik.users.apps.UsersConfig',
     # Your stuff: custom apps go here
-    'rest_haksik.menu.apps.MenuConfig',
+    'rest_haksik.menu.apps.MenuConfig', # 식단알림 앱
+    'rest_haksik.weather.apps.WeatherConfig', # 날씨 앱
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

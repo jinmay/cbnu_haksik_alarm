@@ -1,6 +1,7 @@
-import psycopg2
 import os
 import pyowm
+import psycopg2
+
 
 # settings.local 에서 불러오고 싶은데 
 # 나름대로 해봐도 못하겠어서 급한대로 아래와 같이 사용

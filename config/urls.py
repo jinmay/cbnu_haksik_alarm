@@ -19,6 +19,7 @@ urlpatterns = [
     # Your stuff: custom urls includes go here
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^menu/', include('rest_haksik.menu.urls', namespace="menu")),
+    url(r'^weather/', include('rest_haksik.weather.urls', namespace="weather")),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
