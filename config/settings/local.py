@@ -14,7 +14,7 @@ import os
 
 # DEBUG
 # ------------------------------------------------------------------------------
-DEBUG = env.bool('DJANGO_DEBUG', default=True)
+DEBUG = env.bool('DJANGO_DEBUG', default=False)
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
 # SECRET CONFIGURATION
@@ -22,6 +22,7 @@ TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Note: This key only used for development and testing.
 SECRET_KEY = os.environ["REST_HAKSIK"]
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['*', ])
 
 # Mail settings
 # ------------------------------------------------------------------------------
