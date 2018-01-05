@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class WeatherConfig(AppConfig):
-    name = 'weather'
+    name = 'rest_haksik.weather'
