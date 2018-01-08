@@ -11,19 +11,19 @@ from .models import (
 def ready_crawling(dorm):
     dorm_in_advanced = {
         'main': {
-            'db': Main.objects.all().delete(),
+            'db': 'Main.objects.all().delete()',
             'url': 'https://dorm.chungbuk.ac.kr/sub05/5_2.php?type1=5&type2=2',
         },
         'yangjin': {
-            'db': Yangjin.objects.all().delete(),
+            'db': 'Yangjin.objects.all().delete()',
             'url': 'https://dorm.chungbuk.ac.kr/sub05/5_2_tab3.php?type1=5&type2=2',
         },
         'yangsung': {
-            'db': Yangsung.objects.all().delete(),
+            'db': 'Yangsung.objects.all().delete()',
             'url': 'https://dorm.chungbuk.ac.kr/sub05/5_2_tab2.php?type1=5&type2=2',
         },
         'crj': {
-            'db': Crj.objects.all().delete(),
+            'db': 'Crj.objects.all().delete()',
             'url': 'http://www.cbhscrj.kr/food/list.do?menuKey=39',
         },
     }
