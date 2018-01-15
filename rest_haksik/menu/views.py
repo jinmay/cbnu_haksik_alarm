@@ -150,13 +150,13 @@ class Answer(APIView):
 
             return Response(keyboard, status=status.HTTP_200_OK)
         # 현재기온 선택시
-        elif content == "현재기온":
-            temp = self.get_temp()
-            ment = "청주시의 현재 기온은 {}입니다.".format(temp)
-            keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
-            keyboard["message"]["text"] = ment
+        # elif content == "현재기온":
+        #     temp = self.get_temp()
+        #     ment = "청주시의 현재 기온은 {}입니다.".format(temp)
+        #     keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
+        #     keyboard["message"]["text"] = ment
 
-            return Response(keyboard, status=status.HTTP_200_OK)
+        #     return Response(keyboard, status=status.HTTP_200_OK)
 
 
 # 친구 추가 / 삭제
