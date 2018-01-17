@@ -19,7 +19,7 @@ from rest_haksik.weather import serializers as weather_serializers
 def keyboard(request):
     keyboard = {
         "type": "buttons",
-        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당', '현재기온']
+        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당']
     }
     return Response(data=keyboard, status=status.HTTP_200_OK)
 
