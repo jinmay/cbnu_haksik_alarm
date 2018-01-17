@@ -69,17 +69,13 @@ def sung_crawling(request):
 
 # 청람재
 def crj_crawling(request):
-    Crj.objects.all().delete()
-    crj_url = 'http://www.cbhscrj.kr/food/list.do?menuKey=39'
-    crj_response = requests.get(crj_url)
-    crj_html = BeautifulSoup(crj_response.content, 'lxml')
-    crj_menus = crj_html.select('div.food_week_box')
+    menus = ready_crawling('crj')
 
     for day in range(7):
-        crj_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(crj_menus[day].find_all('p')[0].get_text().strip(),
-            crj_menus[day].find_all('p')[1].get_text().replace(',', "\n").strip(),
-            crj_menus[day].find_all('p')[2].get_text().replace(',', "\n").strip(),
-            crj_menus[day].find_all('p')[3].get_text().replace(',', "\n").strip())
+        crj_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(menus[day].find_all('p')[0].get_text().strip(),
+            menus[day].find_all('p')[1].get_text().replace(',', "\n").strip(),
+            menus[day].find_all('p')[2].get_text().replace(',', "\n").strip(),
+            menus[day].find_all('p')[3].get_text().replace(',', "\n").strip())
 
         crj = Crj(number = day, menu = crj_menu)
         crj.save()
