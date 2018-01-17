@@ -64,7 +64,7 @@ def sung_crawling(request):
         sung = Yangsung(number = day, menu = sung_menu)
         sung.save()
 
-return HttpResponse(status=200)
+    return HttpResponse(status=200)
 
 
 # 청람재
