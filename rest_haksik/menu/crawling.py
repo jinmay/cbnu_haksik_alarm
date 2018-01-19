@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from django.http import HttpResponse
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
@@ -64,22 +65,39 @@ def sung_crawling(request):
         sung = Yangsung(number = day, menu = sung_menu)
         sung.save()
 
-return HttpResponse(status=200)
+    return HttpResponse(status=200)
 
 
 # 청람재
 def crj_crawling(request):
-    menus = ready_crawling('crj')
+    Crj.objects.all().delete()
+    crj_url = 'http://www.cbhscrj.kr/CmsHome/sub04_05.aspx'
+
+    # options for headless
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
+    options.add_argument('window-size=1920x1080')
+    options.add_argument("disable-gpu")
+
+    # Get headless chrome driver
+    driver = webdriver.Chrome('/Users/jin/Desktop/web_course/chromedriver', chrome_options=options)
+    # driver.implicitly_wait(3)
+    driver.get(crj_url)
+
+    crj_driver_html = driver.page_source
+    crj_html = BeautifulSoup(crj_driver_html, 'lxml')
+    crj_menus = crj_html.select('#divList > .fplan_plan') # 7 elements as a list
 
     for day in range(7):
-        crj_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(menus[day].find_all('p')[0].get_text().strip(),
-            menus[day].find_all('p')[1].get_text().replace(',', "\n").strip(),
-            menus[day].find_all('p')[2].get_text().replace(',', "\n").strip(),
-            menus[day].find_all('p')[3].get_text().replace(',', "\n").strip())
+        crj_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(crj_menus[day].find_all('p')[0].get_text().strip(),
+            crj_menus[day].find_all('p')[1].get_text().replace(',', "\n").strip(),
+            crj_menus[day].find_all('p')[2].get_text().replace(',', "\n").strip(),
+            crj_menus[day].find_all('p')[3].get_text().replace(',', "\n").strip())
 
         crj = Crj(number = day, menu = crj_menu)
         crj.save()
 
+    driver.quit()
     return HttpResponse(status=200)
 
 
