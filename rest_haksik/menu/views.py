@@ -37,7 +37,7 @@ class Answer(APIView):
         month = datetime.datetime.now().month
         day = datetime.datetime.now().day
         date = datetime.datetime.now().weekday()
-        date_list = ['월', '화', '수', '목', '금', '토', '일']
+        date_list = ('월', '화', '수', '목', '금', '토', '일')
 
         today_str = "오늘은 {}년 {}월 {}일\n{}요일 입니다.".format(year, month, day, date_list[date])
 
