@@ -73,31 +73,28 @@ def crj_crawling(request):
     Crj.objects.all().delete()
     crj_url = 'http://www.cbhscrj.kr/CmsHome/sub04_05.aspx'
 
-    # options for headless
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
-    options.add_argument('window-size=1920x1080')
-    options.add_argument("disable-gpu")
+    # options.add_argument('window-size=1920x1080')
+    options.add_argument("--disable-gpu")
+    options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
+    options.add_argument("lang=ko_KR")
 
-    # Get headless chrome driver
-    driver = webdriver.Chrome('/Users/jin/Desktop/web_course/chromedriver', chrome_options=options)
-    # driver.implicitly_wait(3)
-    driver.get(crj_url)
+    driver = webdriver.Chrome('/Users/jin/Desktop/chromedriver', chrome_options=options)
+    driver.get('http://www.cbhscrj.kr/CmsHome/sub04_05.aspx')
+    crj_menus = driver.find_elements_by_css_selector("#divList > .fplan_plan")
 
-    crj_driver_html = driver.page_source
-    crj_html = BeautifulSoup(crj_driver_html, 'lxml')
-    crj_menus = crj_html.select('#divList > .fplan_plan') # 7 elements as a list
+    for index, day in enumerate(crj_menus, 0):
+        menus = day.find_elements_by_css_selector("p")
+        crj_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(menus[0].text.replace(',', "\n").strip(), 
+                                                                menus[1].text.replace(',', "\n").strip(), 
+                                                                menus[2].text.replace(',', "\n").strip(), 
+                                                                menus[3].text.replace(',', "\n").strip())
 
-    for day in range(7):
-        crj_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(crj_menus[day].find_all('p')[0].get_text().strip(),
-            crj_menus[day].find_all('p')[1].get_text().replace(',', "\n").strip(),
-            crj_menus[day].find_all('p')[2].get_text().replace(',', "\n").strip(),
-            crj_menus[day].find_all('p')[3].get_text().replace(',', "\n").strip())
-
-        crj = Crj(number = day, menu = crj_menu)
+        crj = Crj(number = index, menu = crj_menu)
         crj.save()
-
     driver.quit()
+    
     return HttpResponse(status=200)
 
 
