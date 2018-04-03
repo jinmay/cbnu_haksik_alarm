@@ -7,4 +7,4 @@ class Weather(models.Model):
     clouds = models.IntegerField()
 
     def __str__(self):
-        return "온도 : {}˚ c / 습도 : {}% / 구름: {}%".format(self.temp, self.humidity, self.clouds)
+        return "온도 : {}˚c / 습도 : {}% / 구름: {}%".format(self.temp, self.humidity, self.clouds)

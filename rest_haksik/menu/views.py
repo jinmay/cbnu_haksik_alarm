@@ -19,7 +19,7 @@ from rest_haksik.weather import serializers as weather_serializers
 def keyboard(request):
     keyboard = {
         "type": "buttons",
-        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당']
+        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당', '현재날씨']
     }
     return Response(data=keyboard, status=status.HTTP_200_OK)
 
@@ -29,7 +29,7 @@ class Answer(APIView):
     newhall = ['별빛식당', '은하수식당']
     week = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일', '기숙사 선택']
     newhall_week = ['월요일', '화요일', '수요일', '목요일', '금요일', '기숙사 선택']
-    temp_now = ['현재기온']
+    temp_now = ['현재날씨']
 
     # 오늘이 몇 일 무슨 요일인지 문자열로 리턴
     def today_date(self):
@@ -38,7 +38,6 @@ class Answer(APIView):
         day = datetime.datetime.now().day
         date = datetime.datetime.now().weekday()
         date_list = ('월', '화', '수', '목', '금', '토', '일')
-
         today_str = "오늘은 {}년 {}월 {}일\n{}요일 입니다.".format(year, month, day, date_list[date])
 
         return today_str
@@ -47,12 +46,12 @@ class Answer(APIView):
     # 기숙사별 해당 요일 메뉴 리턴
     def show_menu(self, dorm, weekday):
         '''
-            청람재와 신학생회관의 경우 월요일: 0 / 일요일: 6
+            신학생회관의 경우 월요일: 0 / 일요일: 6
             학교기숙사의 경우 월요일: 1 / 일요일: 0
         '''
         day_dict = {key: index for index, key in enumerate(Answer.week, 1)}
         day_dict['일요일'] = 0
-        if dorm == "청람재" or dorm == "은하수식당":
+        if dorm == "은하수식당":
             day_dict = {key: index for index, key in enumerate(Answer.week, 0)}
 
         if dorm == "중문기숙사":
@@ -93,7 +92,10 @@ class Answer(APIView):
 
     def get_temp(self):
         temp = float(weather_models.Weather.objects.last().temp)
-        return temp
+        humidity = int(weather_models.Weather.objects.last().humidity)
+        clouds = int(weather_models.Weather.objects.last().clouds)
+
+        return (temp, humidity, clouds)
 
     def post(self, request, format=None):
         rawdata = self.request.data
@@ -149,14 +151,20 @@ class Answer(APIView):
             keyboard["message"] = serializer.data
 
             return Response(keyboard, status=status.HTTP_200_OK)
-        # 현재기온 선택시
-        # elif content == "현재기온":
-        #     temp = self.get_temp()
-        #     ment = "청주시의 현재 기온은 {}입니다.".format(temp)
-        #     keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
-        #     keyboard["message"]["text"] = ment
+        # 현재날씨 선택시
+        elif content == "현재날씨":
+            temp, humidity, clouds = self.get_temp()
+            ment = """
+                    현재 청주시의 날씨는
+                    온도: {}˚c
+                    습도: {}%
+                    흐림: {}%
+                    입니다.
+                    """.format(temp, humidity, clouds)
+            keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
+            keyboard["message"]["text"] = ment
 
-        #     return Response(keyboard, status=status.HTTP_200_OK)
+            return Response(keyboard, status=status.HTTP_200_OK)
 
 
 # 친구 추가 / 삭제
