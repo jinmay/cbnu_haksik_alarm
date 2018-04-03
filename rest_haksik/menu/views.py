@@ -19,7 +19,7 @@ from rest_haksik.weather import serializers as weather_serializers
 def keyboard(request):
     keyboard = {
         "type": "buttons",
-        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당', '현재기온']
+        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당']
     }
     return Response(data=keyboard, status=status.HTTP_200_OK)
 
@@ -37,7 +37,7 @@ class Answer(APIView):
         month = datetime.datetime.now().month
         day = datetime.datetime.now().day
         date = datetime.datetime.now().weekday()
-        date_list = ['월', '화', '수', '목', '금', '토', '일']
+        date_list = ('월', '화', '수', '목', '금', '토', '일')
 
         today_str = "오늘은 {}년 {}월 {}일\n{}요일 입니다.".format(year, month, day, date_list[date])
 

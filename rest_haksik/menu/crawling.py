@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from django.http import HttpResponse
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
@@ -69,17 +70,31 @@ def sung_crawling(request):
 
 # 청람재
 def crj_crawling(request):
-    menus = ready_crawling('crj')
+    Crj.objects.all().delete()
+    crj_url = 'http://www.cbhscrj.kr/CmsHome/sub04_05.aspx'
 
-    for day in range(7):
-        crj_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(menus[day].find_all('p')[0].get_text().strip(),
-            menus[day].find_all('p')[1].get_text().replace(',', "\n").strip(),
-            menus[day].find_all('p')[2].get_text().replace(',', "\n").strip(),
-            menus[day].find_all('p')[3].get_text().replace(',', "\n").strip())
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
+    # options.add_argument('window-size=1920x1080')
+    options.add_argument("--disable-gpu")
+    options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
+    options.add_argument("lang=ko_KR")
 
-        crj = Crj(number = day, menu = crj_menu)
+    driver = webdriver.Chrome('/Users/jin/Desktop/chromedriver', chrome_options=options)
+    driver.get('http://www.cbhscrj.kr/CmsHome/sub04_05.aspx')
+    crj_menus = driver.find_elements_by_css_selector("#divList > .fplan_plan")
+
+    for index, day in enumerate(crj_menus, 0):
+        menus = day.find_elements_by_css_selector("p")
+        crj_menu = "{}\n\n[아침]\n{}\n\n[점심]\n{}\n\n[저녁]\n{}".format(menus[0].text.replace(',', "\n").strip(), 
+                                                                menus[1].text.replace(',', "\n").strip(), 
+                                                                menus[2].text.replace(',', "\n").strip(), 
+                                                                menus[3].text.replace(',', "\n").strip())
+
+        crj = Crj(number = index, menu = crj_menu)
         crj.save()
-
+    driver.quit()
+    
     return HttpResponse(status=200)
 
 
