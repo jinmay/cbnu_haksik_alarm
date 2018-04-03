@@ -154,13 +154,7 @@ class Answer(APIView):
         # 현재날씨 선택시
         elif content == "현재날씨":
             temp, humidity, clouds = self.get_temp()
-            ment = """
-                    현재 청주시의 날씨는
-                    온도: {}˚c
-                    습도: {}%
-                    흐림: {}%
-                    입니다.
-                    """.format(temp, humidity, clouds)
+            ment = """현재 청주시의 날씨는 \n *온도: {}˚c\n *습도: {}%\n *흐림: {}%\n입니다.""".format(temp, humidity, clouds)
             keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
             keyboard["message"]["text"] = ment
 
