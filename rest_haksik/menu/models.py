@@ -33,6 +33,7 @@ class Crj(models.Model):
 
 
 class Star(models.Model):
+    number = models.IntegerField()
     menu = models.TextField()
 
     def __str__(self):

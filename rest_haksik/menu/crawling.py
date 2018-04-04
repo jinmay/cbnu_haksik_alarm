@@ -4,7 +4,7 @@ from selenium import webdriver
 from django.http import HttpResponse
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
-                Galaxy,
+                Galaxy, Star
             )
 
 
@@ -95,6 +95,31 @@ def crj_crawling(request):
         crj.save()
     driver.quit()
     
+    return HttpResponse(status=200)
+
+
+def star_crawling(request):
+    Star.objects.all().delete()
+
+    star_url = 'http://coop.cbnu.ac.kr/m0302'
+    star_response = requests.get(star_url)
+
+    star_bsobj = BeautifulSoup(star_response.content, 'lxml')
+    weekday = star_bsobj.find_all("tr")[0]
+    menus = star_bsobj.find_all("tr")[1]
+
+    star_menus = []
+    # 월 ~ 금 한꺼번에 크롤링하는 게 필요함
+    for index in range(2, 7):
+        star_menus.append("{}\n\n{}".format(
+                                        weekday.find_all("td")[index].text.strip(), 
+                                        menus.find_all("td")[index].text.strip()))
+
+    for weekday_number in range(1, 6):
+                                            # should subtract 1 for starting menu index "one"
+        star = Star(number = weekday_number, menu = star_menus[weekday_number-1]) 
+        star.save()
+        
     return HttpResponse(status=200)
 
 
