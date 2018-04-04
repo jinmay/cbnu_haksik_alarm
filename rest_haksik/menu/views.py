@@ -42,17 +42,15 @@ class Answer(APIView):
 
         return today_str
 
-
     # 기숙사별 해당 요일 메뉴 리턴
     def show_menu(self, dorm, weekday):
         '''
-            신학생회관의 경우 월요일: 0 / 일요일: 6
-            학교기숙사의 경우 월요일: 1 / 일요일: 0
+            학교기숙사와 청람재의 경우 월요일: 1 / 일요일: 0
         '''
         day_dict = {key: index for index, key in enumerate(Answer.week, 1)}
         day_dict['일요일'] = 0
-        if dorm == "은하수식당":
-            day_dict = {key: index for index, key in enumerate(Answer.week, 0)}
+        # if dorm == "은하수식당":
+        #     day_dict = {key: index for index, key in enumerate(Answer.newhall_week, 0)}
 
         if dorm == "중문기숙사":
             return Main.objects.get(number=day_dict[weekday])
@@ -62,14 +60,18 @@ class Answer(APIView):
             return Yangjin.objects.get(number=day_dict[weekday])
         elif dorm == "청람재":
             return Crj.objects.get(number=day_dict[weekday])
-        elif dorm == "은하수식당":
-            return Galaxy.objects.get(number=day_dict[weekday])
+        # elif dorm == "은하수식당":
+        #     return Galaxy.objects.get(number=day_dict[weekday])
 
-    # 신학생회관 메뉴 리턴
-    def show_newhall(self, sort):
-        if sort == "별빛식당":
-            menu = Star.objects.first()
-            return menu
+    def show_menu_haksik(self, dorm, weekday):
+        '''
+            학식과 기숙사 분리
+            기숙사는 월 ~ 일 / 학식은 월 ~ 금 이기때문에 분리함
+            월요일: 1 / 금요일: 5
+        '''
+        day_dict = {key: index for index, key in enumerate(Answer.newhall_week, 1)}
+        if dorm == "별빛식당":
+            return Star.objects.get(number=day_dict[weekday])
 
     def show_keyboard(self, keyboard_buttons):
         keyboard = {
@@ -116,14 +118,6 @@ class Answer(APIView):
             return Response(keyboard, status=status.HTTP_200_OK)
         # 별빛식당 선택시
         elif content == "별빛식당":
-            newhall_menu = self.show_newhall(content)
-            serializer = MenuSerializer(newhall_menu)
-            keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall)
-            keyboard["message"] = serializer.data
-
-            return Response(keyboard, status=status.HTTP_200_OK)
-        # 별빛식당을 제외한 신학생회관 - 은하수식당, 한빛식당 선택 시
-        elif content in Answer.newhall:
             user.dorm = content
             user.save()
 
@@ -131,6 +125,15 @@ class Answer(APIView):
             keyboard["message"]["text"] = content + "\n\n" + self.today_date()
 
             return Response(keyboard, status=status.HTTP_200_OK)
+        # 별빛식당을 제외한 신학생회관 - 은하수식당, 한빛식당 선택 시
+        # elif content in Answer.newhall:
+        #     user.dorm = content
+        #     user.save()
+
+        #     keyboard = self.show_keyboard(Answer.newhall_week)
+        #     keyboard["message"]["text"] = content + "\n\n" + self.today_date()
+
+        #     return Response(keyboard, status=status.HTTP_200_OK)
         # "기숙사 선택"을 눌렀을때
         elif content == "기숙사 선택":
             keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
@@ -140,14 +143,14 @@ class Answer(APIView):
         # 요일 선택시
         elif content in Answer.week:
             dorm = user.dorm
-            dorm_menu = self.show_menu(dorm, content)
-            serializer = MenuSerializer(dorm_menu)
-
-            keyboard = self.show_keyboard(Answer.week)
-            # 은하수식당은 '토요일'과 '일요일'이 보이면 안되기 때문
-            # 임시코드 
-            if user.dorm == "은하수식당":
+            if dorm in Answer.unidorm:
+                dorm_menu = self.show_menu(dorm, content)    
+                keyboard = self.show_keyboard(Answer.week)
+            elif dorm in Answer.newhall:
+                dorm_menu = self.show_menu_haksik(dorm, content)
                 keyboard = self.show_keyboard(Answer.newhall_week)
+
+            serializer = MenuSerializer(dorm_menu)
             keyboard["message"] = serializer.data
 
             return Response(keyboard, status=status.HTTP_200_OK)
