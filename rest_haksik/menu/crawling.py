@@ -98,6 +98,7 @@ def crj_crawling(request):
     return HttpResponse(status=200)
 
 
+# 학식 - 별빛식당
 def star_crawling(request):
     Star.objects.all().delete()
 
@@ -123,7 +124,7 @@ def star_crawling(request):
     return HttpResponse(status=200)
 
 
-# 은하수식당
+# 학식 - 은하수식당
 def galaxy_crawling(request):
     Galaxy.objects.all().delete()
     galaxy_url = 'http://coop.cbnu.ac.kr/m0304'
