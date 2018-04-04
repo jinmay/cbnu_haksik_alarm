@@ -98,6 +98,7 @@ def crj_crawling(request):
     return HttpResponse(status=200)
 
 
+# 학식 - 별빛식당
 def star_crawling(request):
     Star.objects.all().delete()
 
@@ -123,7 +124,7 @@ def star_crawling(request):
     return HttpResponse(status=200)
 
 
-# 은하수식당
+# 학식 - 은하수식당
 def galaxy_crawling(request):
     Galaxy.objects.all().delete()
     galaxy_url = 'http://coop.cbnu.ac.kr/m0304'
@@ -135,7 +136,7 @@ def galaxy_crawling(request):
     lunch_row = tr_list[1].select("td")[2:]
     dinner_row = tr_list[3].select("td")[2:]
 
-    for index, (lunch, dinner) in enumerate(zip(lunch_row, dinner_row)):
+    for index, (lunch, dinner) in enumerate(zip(lunch_row, dinner_row), 1):
         galaxy_menu = "[점심]\n{}\n\n[저녁]\n{}".format(lunch.get_text().strip(), dinner.get_text().strip())
         galaxy = Galaxy(number = index, menu = galaxy_menu)
         galaxy.save()
