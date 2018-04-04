@@ -45,6 +45,7 @@ class Answer(APIView):
     # 기숙사별 해당 요일 메뉴 리턴
     def show_menu(self, dorm, weekday):
         '''
+            학식과 기숙사 분리
             학교기숙사와 청람재의 경우 월요일: 1 / 일요일: 0
         '''
         day_dict = {key: index for index, key in enumerate(Answer.week, 1)}
@@ -71,7 +72,9 @@ class Answer(APIView):
         '''
         day_dict = {key: index for index, key in enumerate(Answer.newhall_week, 1)}
         if dorm == "별빛식당":
-            return Star.objects.get(number=day_dict[weekday])
+            return Star.objects.get(number = day_dict[weekday])
+        elif dorm == "은하수식당":
+            return Galaxy.objects.get(number = day_dict[weekday])
 
     def show_keyboard(self, keyboard_buttons):
         keyboard = {
@@ -116,8 +119,8 @@ class Answer(APIView):
             keyboard["message"]["text"] = content + "\n\n" + self.today_date()
 
             return Response(keyboard, status=status.HTTP_200_OK)
-        # 별빛식당 선택시
-        elif content == "별빛식당":
+        # 별빛식당 / 은하수식당 선택시
+        elif content in Answer.newhall:
             user.dorm = content
             user.save()
 
@@ -143,6 +146,7 @@ class Answer(APIView):
         # 요일 선택시
         elif content in Answer.week:
             dorm = user.dorm
+
             if dorm in Answer.unidorm:
                 dorm_menu = self.show_menu(dorm, content)    
                 keyboard = self.show_keyboard(Answer.week)
