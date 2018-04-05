@@ -42,7 +42,7 @@ def jin_crawling(request):
             jin_menus[day].find_all('td')[2].get_text("\n").strip(),
             jin_menus[day].find_all('td')[3].get_text("\n").strip())
 
-        jin = Yangjin(number = day, menu = jin_menu)
+        jin = Yangjin(number=day, menu=jin_menu)
         jin.save()
 
     return HttpResponse(status=200)
@@ -62,7 +62,7 @@ def sung_crawling(request):
             sung_menus[day].find_all('td')[2].get_text("\n").strip(),
             sung_menus[day].find_all('td')[3].get_text("\n").strip())
 
-        sung = Yangsung(number = day, menu = sung_menu)
+        sung = Yangsung(number=day, menu=sung_menu)
         sung.save()
 
     return HttpResponse(status=200)
@@ -91,7 +91,7 @@ def crj_crawling(request):
                                                                 menus[2].text.replace(',', "\n").strip(), 
                                                                 menus[3].text.replace(',', "\n").strip())
 
-        crj = Crj(number = index, menu = crj_menu)
+        crj = Crj(number=index, menu=crj_menu)
         crj.save()
     driver.quit()
     
@@ -118,7 +118,7 @@ def star_crawling(request):
 
     for weekday_number in range(1, 6):
                                             # should subtract 1 for starting menu index "one"
-        star = Star(number = weekday_number, menu = star_menus[weekday_number-1]) 
+        star = Star(number=weekday_number, menu=star_menus[weekday_number-1]) 
         star.save()
         
     return HttpResponse(status=200)
@@ -138,7 +138,7 @@ def galaxy_crawling(request):
 
     for index, (lunch, dinner) in enumerate(zip(lunch_row, dinner_row), 1):
         galaxy_menu = "[점심]\n{}\n\n[저녁]\n{}".format(lunch.get_text().strip(), dinner.get_text().strip())
-        galaxy = Galaxy(number = index, menu = galaxy_menu)
+        galaxy = Galaxy(number=index, menu=galaxy_menu)
         galaxy.save()
 
     return HttpResponse(status=200)

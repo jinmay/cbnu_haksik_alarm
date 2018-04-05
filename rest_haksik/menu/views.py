@@ -72,9 +72,9 @@ class Answer(APIView):
         '''
         day_dict = {key: index for index, key in enumerate(Answer.newhall_week, 1)}
         if dorm == "별빛식당":
-            return Star.objects.get(number = day_dict[weekday])
+            return Star.objects.get(number=day_dict[weekday])
         elif dorm == "은하수식당":
-            return Galaxy.objects.get(number = day_dict[weekday])
+            return Galaxy.objects.get(number=day_dict[weekday])
 
     def show_keyboard(self, keyboard_buttons):
         keyboard = {
