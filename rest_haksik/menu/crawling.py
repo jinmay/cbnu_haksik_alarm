@@ -4,7 +4,8 @@ from selenium import webdriver
 from django.http import HttpResponse
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
-                Galaxy, Star
+                Galaxy, Star,
+                Notice
             )
 
 
@@ -142,3 +143,41 @@ def galaxy_crawling(request):
         galaxy.save()
 
     return HttpResponse(status=200)
+
+
+# 학교 공지사항
+def main_notice(request):
+    notice_url = 'http://www.chungbuk.ac.kr/site/www/boardList.do?boardSeq=112&key=698'
+    notice_response = requests.get(notice_url)
+
+    chungbuk_url = "http://www.chungbuk.ac.kr/site/www"
+    notice_html = BeautifulSoup(notice_response.text, 'lxml')
+    notice_list = notice_html.select("tbody.tb > tr > td.subject > a")
+    notice_five = notice_list[0:5]
+
+    for list in notice_five:
+        href = list.get("href")[1:]
+
+        notice_title = list.get_text().strip()
+        notice_url = chungbuk_url + href
+
+        notice = Notice(notice=notice_title, url=notice_url)
+        notice.save()
+
+    return HttpResponse(status=200)
+
+
+# 학사/장학 공지사항
+def haksa_notice(request):
+    haksa_url = "http://www.chungbuk.ac.kr/site/www/boardList.do?boardSeq=113&key=699"
+    haksa_response = requests.get(haksa_url)
+
+    haksa_html = BeautifulSoup(haksa_response.text, 'lxml')
+    haksa_list = haksa_html.select("tbody.tb > tr > td.subject > a")
+    haksa_five = haksa_list[0:5]
+
+    for list in haksa_five:
+        href = list.get("href")[1:]
+        print(list.get_text().strip())
+        print(chungbuk_url + href)
+
