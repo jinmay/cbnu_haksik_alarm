@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^crj.crawling$', crawling.crj_crawling, name="crj_crawling"),
     url(r'^star.crawling$', crawling.star_crawling, name="star_crawling"),
     url(r'^galaxy.crawling$', crawling.galaxy_crawling, name="galaxy_crawling"),
+    url(r'^main_notice.crawling$', crawling.main_notice, name="main_notice_crawling"),
 
     # For Kakaotalk auto reply
     url(r'^keyboard$', views.keyboard, name="keyboard"),

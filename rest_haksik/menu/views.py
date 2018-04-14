@@ -8,10 +8,11 @@ from rest_framework.decorators import api_view
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
                 Star, Galaxy,
-                User
+                User,
+                Notice,
             )
 from rest_haksik.weather import models as weather_models
-from .serializers import MenuSerializer
+from .serializers import MenuSerializer, NoticeSerializer
 from rest_haksik.weather import serializers as weather_serializers
 
 
@@ -19,7 +20,7 @@ from rest_haksik.weather import serializers as weather_serializers
 def keyboard(request):
     keyboard = {
         "type": "buttons",
-        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당', '현재날씨']
+        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당', '현재날씨', '공지사항']
     }
     return Response(data=keyboard, status=status.HTTP_200_OK)
 
@@ -30,6 +31,7 @@ class Answer(APIView):
     week = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일', '기숙사 선택']
     newhall_week = ['월요일', '화요일', '수요일', '목요일', '금요일', '기숙사 선택']
     temp_now = ['현재날씨']
+    notice = ['학교 공지사항', '학사/장학 공지사항']
 
     # 오늘이 몇 일 무슨 요일인지 문자열로 리턴
     def today_date(self):
@@ -102,6 +104,18 @@ class Answer(APIView):
 
         return (temp, humidity, clouds)
 
+    def get_notice(self, notice):
+        if notice == "학교 공지사항": 
+            all_notice = Notice.objects.all()
+            message = ""
+            for notice in all_notice:
+                message += "{}\n{}\n\n".format(notice.notice, notice.url)
+                
+        elif notice == "학사/장학 공지사항":
+            pass
+
+        return message
+
     def post(self, request, format=None):
         rawdata = self.request.data
         user_key = rawdata.get("user_key", None)
@@ -161,12 +175,28 @@ class Answer(APIView):
         # 현재날씨 선택시
         elif content == "현재날씨":
             temp, humidity, clouds = self.get_temp()
-            ment = """현재 청주시의 날씨는 \n *온도: {}˚c\n *습도: {}%\n *흐림: {}%\n입니다.""".format(temp, humidity, clouds)
+            ment = "현재 청주시의 날씨는 \n *온도: {}˚c\n *습도: {}%\n *흐림: {}%\n입니다.".format(temp, humidity, clouds)
             keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
             keyboard["message"]["text"] = ment
 
             return Response(keyboard, status=status.HTTP_200_OK)
 
+        # 공지사항 선택시
+        elif content == "공지사항":
+            keyboard = self.show_keyboard(Answer.notice + ['기숙사 선택'])
+            keyboard["message"]["text"] = "최근 공지사항 5개를 안내합니다"
+
+            return Response(keyboard, status=status.HTTP_200_OK)
+
+        # 세부 공지사항 선택시
+        elif content in Answer.notice:
+            keyboard = self.show_keyboard(Answer.notice + ['기숙사 선택'])
+            keyboard["message"]["text"] = self.get_notice(content)
+
+            return Response(keyboard, status=status.HTTP_200_OK)
+
+            
+            
 
 # 친구 추가 / 삭제
 class Friend(APIView):

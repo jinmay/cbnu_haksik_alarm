@@ -53,3 +53,15 @@ class User(models.Model):
 
     def __str__(self):
         return "secretKey: {}".format(self.key)
+
+
+class Notice(models.Model):
+    notice = models.CharField(max_length=100)
+    url = models.CharField(max_length=100)
+
+    # def __str__(self):
+        
+
+
+class Haksa(models.Model):
+    pass
