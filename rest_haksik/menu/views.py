@@ -9,7 +9,7 @@ from .models import (
                 Main, Yangjin, Yangsung, Crj,
                 Star, Galaxy,
                 User,
-                Notice,
+                Notice, Haksa
             )
 from rest_haksik.weather import models as weather_models
 from .serializers import MenuSerializer, NoticeSerializer
@@ -105,14 +105,17 @@ class Answer(APIView):
         return (temp, humidity, clouds)
 
     def get_notice(self, notice):
+        message = ""
+
         if notice == "학교 공지사항": 
-            all_notice = Notice.objects.all()
-            message = ""
+            all_notice = Notice.objects.all()    
             for notice in all_notice:
                 message += "{}\n{}\n\n".format(notice.notice, notice.url)
                 
         elif notice == "학사/장학 공지사항":
-            pass
+            all_haksa = Haksa.objects.all()
+            for notice in all_haksa:
+                message += "{}\n{}\n\n".format(notice.notice, notice.url)
 
         return message
 
@@ -190,14 +193,13 @@ class Answer(APIView):
 
         # 세부 공지사항 선택시
         elif content in Answer.notice:
-            keyboard = self.show_keyboard(Answer.notice + ['기숙사 선택'])
+            keyboard = self.show_keyboard(Answer.notice + ['기숙사 선택', '공지사항'])
             keyboard["message"]["text"] = self.get_notice(content)
 
             return Response(keyboard, status=status.HTTP_200_OK)
 
             
             
-
 # 친구 추가 / 삭제
 class Friend(APIView):
     def get(self, request, format=None):

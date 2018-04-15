@@ -4,7 +4,7 @@ from .models import (
                 Main, Yangjin, Yangsung, Crj,
                 Star, Galaxy,
                 User,
-                Notice
+                Notice, Haksa
             )
 
 @admin.register(Main)
@@ -49,4 +49,9 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Notice)
 class NoticeAdmin(admin.ModelAdmin):
+    list_display = ['notice', 'url']
+
+
+@admin.register(Haksa)
+class HaksaAdmin(admin.ModelAdmin):
     list_display = ['notice', 'url']

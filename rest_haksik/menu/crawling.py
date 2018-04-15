@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
                 Galaxy, Star,
-                Notice
+                Notice, Haksa
             )
 
 
@@ -169,6 +169,7 @@ def main_notice(request):
 
 # 학사/장학 공지사항
 def haksa_notice(request):
+    chungbuk_url = "http://www.chungbuk.ac.kr/site/www"
     haksa_url = "http://www.chungbuk.ac.kr/site/www/boardList.do?boardSeq=113&key=699"
     haksa_response = requests.get(haksa_url)
 
@@ -178,6 +179,12 @@ def haksa_notice(request):
 
     for list in haksa_five:
         href = list.get("href")[1:]
-        print(list.get_text().strip())
-        print(chungbuk_url + href)
+
+        haksa_title = list.get_text().strip()
+        haksa_url = chungbuk_url + href
+
+        notice = Haksa(notice=haksa_title, url=haksa_url)
+        notice.save()
+
+    return HttpResponse(status=200)
 
