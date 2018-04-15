@@ -58,10 +58,8 @@ class User(models.Model):
 class Notice(models.Model):
     notice = models.CharField(max_length=100)
     url = models.CharField(max_length=100)
-
-    # def __str__(self):
         
 
-
 class Haksa(models.Model):
-    pass
+    notice = models.CharField(max_length=100)
+    url = models.CharField(max_length=100)
