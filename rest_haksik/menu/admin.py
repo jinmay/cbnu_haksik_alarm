@@ -3,7 +3,8 @@ from django.contrib import admin
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
                 Star, Galaxy,
-                User
+                User,
+                Notice, Haksa
             )
 
 @admin.register(Main)
@@ -44,3 +45,13 @@ class GalaxyAdmin(admin.ModelAdmin):
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ['key', 'dorm']
+
+
+@admin.register(Notice)
+class NoticeAdmin(admin.ModelAdmin):
+    list_display = ['notice', 'url']
+
+
+@admin.register(Haksa)
+class HaksaAdmin(admin.ModelAdmin):
+    list_display = ['notice', 'url']
