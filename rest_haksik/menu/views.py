@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -16,6 +17,8 @@ from rest_haksik.weather import models as weather_models
 from .serializers import MenuSerializer, NoticeSerializer
 from rest_haksik.weather import serializers as weather_serializers
 
+logger = logging.getLogger(__name__)
+
 
 INIT_KEYBOARD = ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당', '현재날씨', '공지사항', '한영번역']
 
@@ -25,6 +28,9 @@ def keyboard(request):
         "type": "buttons",
         "buttons": INIT_KEYBOARD
     }
+
+    print('--------logger------------')
+    logger.info(request.GET.get('key'))
     return Response(data=keyboard, status=status.HTTP_200_OK)
 
 
@@ -144,6 +150,8 @@ class Answer(APIView):
         rawdata = self.request.data
         user_key = rawdata.get("user_key", None)
         content = rawdata.get("content", None)
+
+        logger.info(self.request.data.get('content'))
 
         user = self.get_user(user_key)
 
