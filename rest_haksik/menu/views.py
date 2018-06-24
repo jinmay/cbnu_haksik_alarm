@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from googletrans import Translator
 
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
@@ -16,11 +17,13 @@ from .serializers import MenuSerializer, NoticeSerializer
 from rest_haksik.weather import serializers as weather_serializers
 
 
+INIT_KEYBOARD = ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당', '현재날씨', '공지사항', '한영번역']
+
 @api_view(['GET'])
 def keyboard(request):
     keyboard = {
         "type": "buttons",
-        "buttons": ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당', '현재날씨', '공지사항']
+        "buttons": INIT_KEYBOARD
     }
     return Response(data=keyboard, status=status.HTTP_200_OK)
 
@@ -32,6 +35,13 @@ class Answer(APIView):
     newhall_week = ['월요일', '화요일', '수요일', '목요일', '금요일', '기숙사 선택']
     temp_now = ['현재날씨']
     notice = ['학교 공지사항', '학사/장학 공지사항']
+    trans = ['한영번역']
+
+    def do_translate(self, content):
+        translator = Translator()
+        translated_str = translator.translate(content, src='ko', dest='en') # src / dest 고려
+
+        return translated_str.text
 
     # 오늘이 몇 일 무슨 요일인지 문자열로 리턴
     def today_date(self):
@@ -78,6 +88,7 @@ class Answer(APIView):
         elif dorm == "은하수식당":
             return Galaxy.objects.get(number=day_dict[weekday])
 
+    # 키보드 응답할때
     def show_keyboard(self, keyboard_buttons):
         keyboard = {
             "message": {
@@ -89,6 +100,16 @@ class Answer(APIView):
             }
         }
         return keyboard
+
+    # 텍스트 응답할때
+    def show_text(self):
+        response = {
+            "message": {
+                "text": None
+            }
+        }
+
+        return response
 
     def get_user(self, key):
         try:
@@ -154,9 +175,10 @@ class Answer(APIView):
         #     keyboard["message"]["text"] = content + "\n\n" + self.today_date()
 
         #     return Response(keyboard, status=status.HTTP_200_OK)
-        # "기숙사 선택"을 눌렀을때
+
+        # "기숙사 선택"을 눌렀을때 -> 처음으로 돌아갔을때와 같은 키보드를 출력한다
         elif content == "기숙사 선택":
-            keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
+            keyboard = self.show_keyboard(INIT_KEYBOARD)
             keyboard["message"]["text"] = content
 
             return Response(keyboard, status=status.HTTP_200_OK)
@@ -198,7 +220,30 @@ class Answer(APIView):
 
             return Response(keyboard, status=status.HTTP_200_OK)
 
-            
+        # 한영번역 선택시
+        elif content == "한영번역":
+            keyboard = self.show_text()
+            keyboard["message"]["text"] = "국문 -> 영문 번역입니다.\n버튼을 다시 보고 싶으시면 [처음으로]를 입력해주세요!"
+
+            return Response(keyboard, status=status.HTTP_200_OK)
+
+        # 처음으로 입력했을 때
+        elif content == "처음으로":
+            ment = "처음으로 돌아갑니다~\n기숙사를 선택해주세요!"
+            keyboard = self.show_keyboard(INIT_KEYBOARD)
+            keyboard["message"]["text"] = ment
+
+            return Response(keyboard, status=status.HTTP_200_OK)
+
+        # 버튼을 누른게 아닌 텍스트가 입력되었을 때
+        # 하지만 예를들어
+        # "청람재"를 입력하면 한영번역을 하는게 아니라 "청람재" 버튼을 누른 효과가 있는 현상발생...
+        else:
+            keyboard = self.show_text()
+            keyboard["message"]["text"] = self.do_translate(content)
+
+            return Response(keyboard, status=status.HTTP_200_OK)
+
             
 # 친구 추가 / 삭제
 class Friend(APIView):
