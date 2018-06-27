@@ -150,7 +150,6 @@ class Answer(APIView):
         user_key = rawdata.get("user_key", None)
         content = rawdata.get("content", None)
 
-        # logger.info(self.request.data.get('content'))
         logger.info('{},{}'.format(user_key, content))
 
         user = self.get_user(user_key)
