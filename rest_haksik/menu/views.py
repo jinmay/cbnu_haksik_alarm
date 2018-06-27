@@ -41,6 +41,7 @@ class Answer(APIView):
     notice = ['학교 공지사항', '학사/장학 공지사항']
     trans = ['한영번역']
 
+    # 한영번역 기능
     def do_translate(self, content):
         translator = Translator()
         translated_str = translator.translate(content, src='ko', dest='en') # src / dest 고려
