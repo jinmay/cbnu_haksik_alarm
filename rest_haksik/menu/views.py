@@ -29,8 +29,6 @@ def keyboard(request):
         "buttons": INIT_KEYBOARD
     }
 
-    print('--------logger------------')
-    logger.info(request.GET.get('key'))
     return Response(data=keyboard, status=status.HTTP_200_OK)
 
 
@@ -151,7 +149,8 @@ class Answer(APIView):
         user_key = rawdata.get("user_key", None)
         content = rawdata.get("content", None)
 
-        logger.info(self.request.data.get('content'))
+        # logger.info(self.request.data.get('content'))
+        logger.info('{},{}'.format(user_key, content))
 
         user = self.get_user(user_key)
 

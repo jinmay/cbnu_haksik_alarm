@@ -281,23 +281,37 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
     'formatters': {
-        'simple': {
+        'test': {
             'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
             'datefmt': '%d/%b/%Y %H:%M:%S',    
+        },
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'for_elastic': {
+            'format': '%(message)s'
         }
     },
     'handlers': {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'simple'
+            'formatter': 'for_elastic',
         },
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'formatter': 'simple',
-            'filename': 'logs/logfile'
-        }
+            'formatter': 'for_elastic',
+            'filename': 'logs/haksik_log.csv'
+        },
+        # 'test_first': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.handlers.TimedRotatingFileHandler',
+        #     'when': 'midnight',
+        #     'interval': 1,
+        #     'formatter': 'test',
+        #     'filename': 'logs/test_log'
+        # },
     },
     'loggers': {
         'rest_haksik.menu': {
