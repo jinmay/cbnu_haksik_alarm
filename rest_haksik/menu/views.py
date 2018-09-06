@@ -143,31 +143,6 @@ class Answer(APIView):
 
         return message
 
-    def get_eating_time(self, dorm):
-        uni = '''
-<평일>
-아침: 07:20 ~ 09:00
-점심: 11:30 ~ 13:30
-저녁: 17:30 ~ 19:10
-
-<주말/공휴일>
-아침: 08:00 ~ 09:00
-점심: 12:00 ~ 13:00
-저녁: 17:30 ~ 19:00
-        '''
-
-        ramjae = '''
-아침 - 07:30∼09:00 
-(토, 일, 공휴일, 방학 - 08:00∼09:00)
-점심 - 12:00∼13:00
-저녁 - 18:00∼19:30 
-(토, 일, 공휴일, 방학 - 18:00∼19:00)
-        '''
-        if dorm in ['중문기숙사', '양성재', '양진재']:
-            return uni
-        elif dorm == "청람재":
-            return ramjae
-
     def post(self, request, format=None):
         rawdata = self.request.data
         user_key = rawdata.get("user_key", None)
@@ -183,7 +158,7 @@ class Answer(APIView):
             user.save()
 
             keyboard = self.show_keyboard(DORM_WEEKDAY)
-            keyboard["message"]["text"] = content + "\n\n" + self.today_date() + "\n" + self.get_eating_time(content)
+            keyboard["message"]["text"] = content + "\n\n" + self.today_date()
 
             return Response(keyboard, status=status.HTTP_200_OK)
 
