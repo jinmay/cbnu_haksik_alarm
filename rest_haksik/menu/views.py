@@ -78,8 +78,6 @@ class Answer(APIView):
             return Yangjin.objects.get(number=day_dict[weekday])
         elif dorm == "청람재":
             return Crj.objects.get(number=day_dict[weekday])
-        # elif dorm == "은하수식당":
-        #     return Galaxy.objects.get(number=day_dict[weekday])
 
     # 학교식당 해당 요일 메뉴 리턴
     def show_menu_haksik(self, dorm, weekday):
@@ -114,7 +112,6 @@ class Answer(APIView):
                 "text": None
             }
         }
-
         return response
 
     def get_user(self, key):
@@ -199,16 +196,6 @@ class Answer(APIView):
             keyboard["message"]["text"] = content + "\n\n" + self.today_date()
 
             return Response(keyboard, status=status.HTTP_200_OK)
-
-        # 별빛식당을 제외한 신학생회관 - 은하수식당, 한빛식당 선택 시
-        # elif content in Answer.newhall:
-        #     user.dorm = content
-        #     user.save()
-
-        #     keyboard = self.show_keyboard(Answer.newhall_week)
-        #     keyboard["message"]["text"] = content + "\n\n" + self.today_date()
-
-        #     return Response(keyboard, status=status.HTTP_200_OK)
 
         # "기숙사 선택"을 눌렀을때 -> 처음으로 돌아갔을때와 같은 키보드를 출력한다
         elif content == "기숙사 선택":
