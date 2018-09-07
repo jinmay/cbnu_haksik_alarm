@@ -11,10 +11,9 @@ from .models import (
                 Main, Yangjin, Yangsung, Crj,
                 Star, Galaxy,
                 User,
-                Notice, Haksa
             )
 from rest_haksik.weather import models as weather_models
-from .serializers import MenuSerializer, NoticeSerializer
+from .serializers import MenuSerializer
 from rest_haksik.weather import serializers as weather_serializers
 
 logger = logging.getLogger(__name__)
@@ -38,7 +37,6 @@ def keyboard(request):
 
 class Answer(APIView):
     temp_now = ['현재날씨']
-    notice = ['학교 공지사항', '학사/장학 공지사항']
     trans = ['한영번역']
 
     # 한영번역 기능
@@ -67,8 +65,6 @@ class Answer(APIView):
         '''
         day_dict = {key: index for index, key in enumerate(DORM_WEEKDAY, 1)}
         day_dict['일요일'] = 0
-        # if dorm == "은하수식당":
-        #     day_dict = {key: index for index, key in enumerate(Answer.newhall_week, 0)}
 
         if dorm == "중문기숙사":
             return Main.objects.get(number=day_dict[weekday])
@@ -128,19 +124,19 @@ class Answer(APIView):
 
         return (temp, humidity, clouds)
 
-    def get_notice(self, notice):
-        message = ""
+    def eat_time(self):
+        message = """
+[충북대학교 기숙사]
+<평일>
+아 침: 07 : 20 ~ 09 : 00 
+점 심: 11 : 30 ~ 13 : 30 
+저 녁: 17 : 30 ~ 19 : 10 
 
-        if notice == "학교 공지사항": 
-            all_notice = Notice.objects.all()    
-            for notice in all_notice:
-                message += "{}\n{}\n\n".format(notice.notice, notice.url)
-                
-        elif notice == "학사/장학 공지사항":
-            all_haksa = Haksa.objects.all()
-            for notice in all_haksa:
-                message += "{}\n{}\n\n".format(notice.notice, notice.url)
-
+<주말/공휴일>
+아 침: 08 : 00 ~ 09 : 00
+점 심: 12 : 00 ~ 13 : 00
+저 녁: 17 : 30 ~ 19 : 00
+"""
         return message
 
     def post(self, request, format=None):
@@ -204,17 +200,10 @@ class Answer(APIView):
 
             return Response(keyboard, status=status.HTTP_200_OK)
 
-        # 공지사항 선택시
-        elif content == "공지사항":
-            keyboard = self.show_keyboard(Answer.notice + ['기숙사 선택'])
-            keyboard["message"]["text"] = "최근 공지사항 5개를 안내합니다"
-
-            return Response(keyboard, status=status.HTTP_200_OK)
-
-        # 세부 공지사항 선택시
-        elif content in Answer.notice:
-            keyboard = self.show_keyboard(Answer.notice + ['기숙사 선택', '공지사항'])
-            keyboard["message"]["text"] = self.get_notice(content)
+        elif content == "식사시간":
+            ment = "식사 시간을 안내합니다\n" + self.eat_time()
+            keyboard = self.show_keyboard(DORM_WEEKDAY)
+            keyboard["message"]["text"] = ment + "\n" + self.today_date()
 
             return Response(keyboard, status=status.HTTP_200_OK)
 
