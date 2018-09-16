@@ -11,16 +11,19 @@ from .models import (
                 Main, Yangjin, Yangsung, Crj,
                 Star, Galaxy,
                 User,
-                Notice, Haksa
             )
 from rest_haksik.weather import models as weather_models
-from .serializers import MenuSerializer, NoticeSerializer
+from .serializers import MenuSerializer
 from rest_haksik.weather import serializers as weather_serializers
 
 logger = logging.getLogger(__name__)
 
 
 INIT_KEYBOARD = ['중문기숙사', '양진재', '양성재', '청람재', '별빛식당', '은하수식당', '현재날씨', '공지사항', '한영번역']
+DORM_WEEKDAY = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일', '기숙사 선택']
+HAKSIK_WEEKDAY = ['월요일', '화요일', '수요일', '목요일', '금요일', '기숙사 선택']
+UNIDORM = ['중문기숙사', '양진재', '양성재', '청람재']
+HAKSIK = ['별빛식당', '은하수식당']
 
 @api_view(['GET'])
 def keyboard(request):
@@ -33,14 +36,10 @@ def keyboard(request):
 
 
 class Answer(APIView):
-    unidorm = ['중문기숙사', '양진재', '양성재', '청람재']
-    newhall = ['별빛식당', '은하수식당']
-    week = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일', '기숙사 선택']
-    newhall_week = ['월요일', '화요일', '수요일', '목요일', '금요일', '기숙사 선택']
     temp_now = ['현재날씨']
-    notice = ['학교 공지사항', '학사/장학 공지사항']
     trans = ['한영번역']
 
+    # 한영번역 기능
     def do_translate(self, content):
         translator = Translator()
         translated_str = translator.translate(content, src='ko', dest='en') # src / dest 고려
@@ -64,10 +63,8 @@ class Answer(APIView):
             학식과 기숙사 분리
             학교기숙사와 청람재의 경우 월요일: 1 / 일요일: 0
         '''
-        day_dict = {key: index for index, key in enumerate(Answer.week, 1)}
+        day_dict = {key: index for index, key in enumerate(DORM_WEEKDAY, 1)}
         day_dict['일요일'] = 0
-        # if dorm == "은하수식당":
-        #     day_dict = {key: index for index, key in enumerate(Answer.newhall_week, 0)}
 
         if dorm == "중문기숙사":
             return Main.objects.get(number=day_dict[weekday])
@@ -77,9 +74,8 @@ class Answer(APIView):
             return Yangjin.objects.get(number=day_dict[weekday])
         elif dorm == "청람재":
             return Crj.objects.get(number=day_dict[weekday])
-        # elif dorm == "은하수식당":
-        #     return Galaxy.objects.get(number=day_dict[weekday])
 
+    # 학교식당 해당 요일 메뉴 리턴
     def show_menu_haksik(self, dorm, weekday):
         '''
             학식과 기숙사 분리
@@ -112,7 +108,6 @@ class Answer(APIView):
                 "text": None
             }
         }
-
         return response
 
     def get_user(self, key):
@@ -129,19 +124,19 @@ class Answer(APIView):
 
         return (temp, humidity, clouds)
 
-    def get_notice(self, notice):
-        message = ""
+    def eat_time(self):
+        message = """
+[충북대학교 기숙사]
+<평일>
+아 침: 07 : 20 ~ 09 : 00 
+점 심: 11 : 30 ~ 13 : 30 
+저 녁: 17 : 30 ~ 19 : 10 
 
-        if notice == "학교 공지사항": 
-            all_notice = Notice.objects.all()    
-            for notice in all_notice:
-                message += "{}\n{}\n\n".format(notice.notice, notice.url)
-                
-        elif notice == "학사/장학 공지사항":
-            all_haksa = Haksa.objects.all()
-            for notice in all_haksa:
-                message += "{}\n{}\n\n".format(notice.notice, notice.url)
-
+<주말/공휴일>
+아 침: 08 : 00 ~ 09 : 00
+점 심: 12 : 00 ~ 13 : 00
+저 녁: 17 : 30 ~ 19 : 00
+"""
         return message
 
     def post(self, request, format=None):
@@ -149,23 +144,22 @@ class Answer(APIView):
         user_key = rawdata.get("user_key", None)
         content = rawdata.get("content", None)
 
-        # logger.info(self.request.data.get('content'))
         logger.info('{},{}'.format(user_key, content))
 
         user = self.get_user(user_key)
 
         # 기숙사의 종류를 선택했을 때
-        if content in Answer.unidorm:
-            # Answer.selected_dorm = content
+        if content in UNIDORM:
             user.dorm = content
             user.save()
 
-            keyboard = self.show_keyboard(Answer.week)
+            keyboard = self.show_keyboard(DORM_WEEKDAY)
             keyboard["message"]["text"] = content + "\n\n" + self.today_date()
 
             return Response(keyboard, status=status.HTTP_200_OK)
+
         # 별빛식당 / 은하수식당 선택시
-        elif content in Answer.newhall:
+        elif content in HAKSIK:
             user.dorm = content
             user.save()
 
@@ -173,15 +167,6 @@ class Answer(APIView):
             keyboard["message"]["text"] = content + "\n\n" + self.today_date()
 
             return Response(keyboard, status=status.HTTP_200_OK)
-        # 별빛식당을 제외한 신학생회관 - 은하수식당, 한빛식당 선택 시
-        # elif content in Answer.newhall:
-        #     user.dorm = content
-        #     user.save()
-
-        #     keyboard = self.show_keyboard(Answer.newhall_week)
-        #     keyboard["message"]["text"] = content + "\n\n" + self.today_date()
-
-        #     return Response(keyboard, status=status.HTTP_200_OK)
 
         # "기숙사 선택"을 눌렀을때 -> 처음으로 돌아갔을때와 같은 키보드를 출력한다
         elif content == "기숙사 선택":
@@ -189,41 +174,36 @@ class Answer(APIView):
             keyboard["message"]["text"] = content
 
             return Response(keyboard, status=status.HTTP_200_OK)
+
         # 요일 선택시
-        elif content in Answer.week:
+        elif content in DORM_WEEKDAY:
             dorm = user.dorm
 
-            if dorm in Answer.unidorm:
+            if dorm in UNIDORM:
                 dorm_menu = self.show_menu(dorm, content)    
-                keyboard = self.show_keyboard(Answer.week)
-            elif dorm in Answer.newhall:
+                keyboard = self.show_keyboard(DORM_WEEKDAY)
+            elif dorm in HAKSIK:
                 dorm_menu = self.show_menu_haksik(dorm, content)
-                keyboard = self.show_keyboard(Answer.newhall_week)
+                keyboard = self.show_keyboard(HAKSIK_WEEKDAY)
 
             serializer = MenuSerializer(dorm_menu)
             keyboard["message"] = serializer.data
 
             return Response(keyboard, status=status.HTTP_200_OK)
+
         # 현재날씨 선택시
         elif content == "현재날씨":
             temp, humidity, clouds = self.get_temp()
             ment = "현재 청주시의 날씨는 \n *온도: {}˚c\n *습도: {}%\n *흐림: {}%\n입니다.".format(temp, humidity, clouds)
-            keyboard = self.show_keyboard(Answer.unidorm + Answer.newhall + Answer.temp_now)
+            keyboard = self.show_keyboard(INIT_KEYBOARD)
             keyboard["message"]["text"] = ment
 
             return Response(keyboard, status=status.HTTP_200_OK)
 
-        # 공지사항 선택시
-        elif content == "공지사항":
-            keyboard = self.show_keyboard(Answer.notice + ['기숙사 선택'])
-            keyboard["message"]["text"] = "최근 공지사항 5개를 안내합니다"
-
-            return Response(keyboard, status=status.HTTP_200_OK)
-
-        # 세부 공지사항 선택시
-        elif content in Answer.notice:
-            keyboard = self.show_keyboard(Answer.notice + ['기숙사 선택', '공지사항'])
-            keyboard["message"]["text"] = self.get_notice(content)
+        elif content == "식사시간":
+            ment = "식사 시간을 안내합니다\n" + self.eat_time()
+            keyboard = self.show_keyboard(DORM_WEEKDAY)
+            keyboard["message"]["text"] = ment + "\n" + self.today_date()
 
             return Response(keyboard, status=status.HTTP_200_OK)
 
@@ -236,7 +216,7 @@ class Answer(APIView):
 
         # 처음으로 입력했을 때
         elif content == "처음으로":
-            ment = "처음으로 돌아갑니다~\n기숙사를 선택해주세요!"
+            ment = "처음으로 돌아갑니다~@"
             keyboard = self.show_keyboard(INIT_KEYBOARD)
             keyboard["message"]["text"] = ment
 
