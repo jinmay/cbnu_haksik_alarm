@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from .models import (
                 Main, Yangjin, Yangsung, Crj,
                 Galaxy, Star,
-                Notice, Haksa
             )
 
 
