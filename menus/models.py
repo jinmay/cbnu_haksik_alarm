@@ -11,7 +11,7 @@ class Middle(models.Model):
     menu = models.TextField()
 
     def __str__(self):
-        return self.week[number]
+        return week[self.number]
 
 
 class Yangsung(models.Model):
@@ -19,7 +19,7 @@ class Yangsung(models.Model):
     menu = models.TextField()
 
     def __str__(self):
-        return self.week[number]
+        return week[self.number]
 
 
 class Yangjin(models.Model):
@@ -27,7 +27,7 @@ class Yangjin(models.Model):
     menu = models.TextField()
 
     def __str__(self):
-        return self.week[number]
+        return week[self.number]
 
 
 class User(models.Model):
