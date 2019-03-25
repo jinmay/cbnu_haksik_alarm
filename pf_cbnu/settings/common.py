@@ -39,7 +39,9 @@ DEFAULT_APPS = [
     'django.contrib.staticfiles',
 ]
 
-THRID_APPS = []
+THRID_APPS = [
+    'rest_framework',
+]
 
 ADDED_APPS = [
     'menus.apps.MenusConfig',
