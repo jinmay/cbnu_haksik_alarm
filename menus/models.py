@@ -6,7 +6,7 @@ week = {
     for idx, v in enumerate(week_list)
 }
 
-class Middle(models.Model):
+class Main(models.Model):
     number = models.IntegerField()
     menu = models.TextField()
 

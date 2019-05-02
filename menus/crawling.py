@@ -2,12 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 from django.http import HttpResponse
 from .models import (
-                Middle, Yangjin, Yangsung
+                Main, Yangjin, Yangsung
             )
 
 
 # 중문기숙사
-def middle_crawling(request):
+def main_crawling(request):
     Middle.objects.all().delete()
     main_url = 'https://dorm.chungbuk.ac.kr/sub05/5_2.php?type1=5&type2=2'
     main_response = requests.get(main_url, verify=False)
@@ -20,7 +20,7 @@ def middle_crawling(request):
             main_menus[day].find_all('td')[2].get_text("\n").strip(),
             main_menus[day].find_all('td')[3].get_text("\n").strip())
 
-        main = Middle(number = day, menu = main_menu)
+        main = Main(number = day, menu = main_menu)
         main.save()
 
     return HttpResponse(status=200)

@@ -1,11 +1,11 @@
 from django.contrib import admin
 from .models import (
-                Middle, Yangjin, Yangsung,
+                Main, Yangjin, Yangsung,
                 User,
             )
 
-@admin.register(Middle)
-class MiddleAdmin(admin.ModelAdmin):
+@admin.register(Main)
+class MainAdmin(admin.ModelAdmin):
     list_display = ['number', 'menu']
     list_display_links = ['menu']
 
