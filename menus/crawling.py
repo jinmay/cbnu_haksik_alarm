@@ -8,7 +8,7 @@ from .models import (
 
 # 중문기숙사
 def main_crawling(request):
-    Middle.objects.all().delete()
+    Main.objects.all().delete()
     main_url = 'https://dorm.chungbuk.ac.kr/sub05/5_2.php?type1=5&type2=2'
     main_response = requests.get(main_url, verify=False)
     main_html = BeautifulSoup(main_response.content, 'lxml', from_encoding="utf-8")
