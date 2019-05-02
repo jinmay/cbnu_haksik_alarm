@@ -6,20 +6,20 @@ from .models import (
 
 @admin.register(Main)
 class MainAdmin(admin.ModelAdmin):
-    list_display = ['number', 'menu']
-    list_display_links = ['menu']
+    list_display = ['number', 'day', 'menu', ]
+    list_display_links = ['day', ]
 
 
 @admin.register(Yangsung)
 class YangsungAdmin(admin.ModelAdmin):
-    list_display = ['number', 'menu']
-    list_display_links = ['menu']
+    list_display = ['number', 'day', 'menu', ]
+    list_display_links = ['day', ]
 
 
 @admin.register(Yangjin)
 class YangjinAdmin(admin.ModelAdmin):
-    list_display = ['number', 'menu']
-    list_display_links = ['menu']
+    list_display = ['number', 'day', 'menu', ]
+    list_display_links = ['day', ]
 
 
 @admin.register(User)

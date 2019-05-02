@@ -11,7 +11,11 @@ class Main(models.Model):
     menu = models.TextField()
 
     def __str__(self):
-        return week[self.number]
+        return "중문기숙사 - {}".format(week[self.number])
+
+    @property
+    def day(self):
+        return "중문기숙사 - {}".format(week[self.number])
 
 
 class Yangsung(models.Model):
@@ -19,7 +23,11 @@ class Yangsung(models.Model):
     menu = models.TextField()
 
     def __str__(self):
-        return week[self.number]
+        return "양성재 - {}".format(week[self.number])
+
+    @property
+    def day(self):
+        return "양성재 - {}".format(week[self.number])
 
 
 class Yangjin(models.Model):
@@ -27,7 +35,11 @@ class Yangjin(models.Model):
     menu = models.TextField()
 
     def __str__(self):
-        return week[self.number]
+        return "양진재 - {}".format(week[self.number])
+
+    @property
+    def day(self):
+        return "양진재 - {}".format(week[self.number])
 
 
 class User(models.Model):
