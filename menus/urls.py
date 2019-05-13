@@ -23,7 +23,7 @@ urlpatterns = [
         name='jin_crawling'
     ),
     path(
-        route='crawling.main',
+        route='crawling.yangsung',
         view=crawling.sung_crawling,
         name='sung_crawling'
     ),
