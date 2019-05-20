@@ -8,9 +8,9 @@ week = {
 
 class Main(models.Model):
     day = models.IntegerField()
-    breakfast = models.CharField(max_length=200)
-    lunch = models.CharField(max_length=200)
-    dinner = models.CharField(max_length=200)
+    breakfast = models.TextField()
+    lunch = models.TextField()
+    dinner = models.TextField()
 
     def __str__(self):
         return "중문기숙사 - {}".format(week[self.day])
@@ -22,9 +22,9 @@ class Main(models.Model):
 
 class Yangsung(models.Model):
     day = models.IntegerField()
-    breakfast = models.CharField(max_length=200)
-    lunch = models.CharField(max_length=200)
-    dinner = models.CharField(max_length=200)
+    breakfast = models.TextField()
+    lunch = models.TextField()
+    dinner = models.TextField()
 
     def __str__(self):
         return "양성재 - {}".format(week[self.day])
@@ -36,9 +36,9 @@ class Yangsung(models.Model):
         
 class Yangjin(models.Model):
     day = models.IntegerField()
-    breakfast = models.CharField(max_length=200)
-    lunch = models.CharField(max_length=200)
-    dinner = models.CharField(max_length=200)
+    breakfast = models.TextField()
+    lunch = models.TextField()
+    dinner = models.TextField()
 
     def __str__(self):
         return "양진재 - {}".format(week[self.day])
