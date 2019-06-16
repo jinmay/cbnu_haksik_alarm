@@ -9,7 +9,7 @@ from .serializers import TodayMenuSerializer
 
 
 def today():
-    date = datetime.datetime.now().isoweekday() # isoweekday는 월요일이 1부터 시작
+    date = datetime.datetime.now().isoweekday() # isoweekday는 월요일이 1부터 시작)
     return date
 
 @api_view(['GET'])
