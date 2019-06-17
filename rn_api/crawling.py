@@ -16,10 +16,10 @@ def main_crawling(request):
     main_html = BeautifulSoup(main_response.content, 'lxml', from_encoding="utf-8")
     main_menus = main_html.select('tr[id]')
 
-    for day in range(1, 8):
-        breakfast = main_menus[day-1].find_all('td')[1].get_text("\n").strip()
-        lunch = main_menus[day-1].find_all('td')[2].get_text("\n").strip()
-        dinner = main_menus[day-1].find_all('td')[3].get_text("\n").strip()
+    for day in range(7):
+        breakfast = main_menus[day].find_all('td')[1].get_text("\n").strip()
+        lunch = main_menus[day].find_all('td')[2].get_text("\n").strip()
+        dinner = main_menus[day].find_all('td')[3].get_text("\n").strip()
 
         main = Main(day=day, breakfast=breakfast, lunch=lunch, dinner=dinner)
         main.save()
@@ -35,9 +35,9 @@ def sung_crawling(request):
     sung_menus = sung_html.select('tr')[1:8]
 
     for day in range(1, 8):
-        breakfast = sung_menus[day-1].find_all('td')[1].get_text("\n").strip()
-        lunch = sung_menus[day-1].find_all('td')[2].get_text("\n").strip()
-        dinner = sung_menus[day-1].find_all('td')[3].get_text("\n").strip()
+        breakfast = sung_menus[day].find_all('td')[1].get_text("\n").strip()
+        lunch = sung_menus[day].find_all('td')[2].get_text("\n").strip()
+        dinner = sung_menus[day].find_all('td')[3].get_text("\n").strip()
 
         sung = Yangsung(day=day, breakfast=breakfast, lunch=lunch, dinner=dinner)
         sung.save()
@@ -53,9 +53,9 @@ def jin_crawling(request):
     jin_menus = jin_html.select('tr')[1:8]
 
     for day in range(1, 8):
-        breakfast = jin_menus[day-1].find_all('td')[1].get_text("\n").strip()
-        lunch = jin_menus[day-1].find_all('td')[2].get_text("\n").strip()
-        dinner = jin_menus[day-1].find_all('td')[3].get_text("\n").strip()
+        breakfast = jin_menus[day].find_all('td')[1].get_text("\n").strip()
+        lunch = jin_menus[day].find_all('td')[2].get_text("\n").strip()
+        dinner = jin_menus[day].find_all('td')[3].get_text("\n").strip()
 
         jin = Yangjin(day=day, breakfast=breakfast, lunch=lunch, dinner=dinner)
         jin.save()

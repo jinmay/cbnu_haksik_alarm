@@ -1,11 +1,10 @@
 import datetime
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Main, Yangsung, Yangjin
-from .serializers import TodayMenuSerializer
+from .serializers import TodayMenuSerializer, WeekMenuSerializer
 
 
 def today():
@@ -39,3 +38,19 @@ def get_today(request, format=None):
         "yangjin": serializer_yangjin.data
     }
     return Response(data=data, status=status.HTTP_200_OK)
+
+def get_menus(dorm):
+    if dorm == 'main':
+        return Main.objects.all()
+    elif dorm == 'yangsung':
+        return Yangsung.objects.all()
+    elif dorm == 'yangjin':
+        return Yangjin.objects.all()
+
+@api_view(['GET'])
+def get_week(request, format=None):
+    dorm = request.query_params.get('dorm', None)
+    if dorm is not None:
+        menu_list = get_menus(dorm)
+    serializer = WeekMenuSerializer(menu_list, many=True)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)

@@ -7,6 +7,7 @@ app_name = "rn"
 urlpatterns = [
     # For RN api
     path('get_today/', views.get_today),
+    path('get_week/', views.get_week),
 
     # For crawling
     path(
