@@ -35,8 +35,8 @@ def sung_crawling(request):
     sung_menus = sung_html.select('tr')[1:8]
 
     for day in range(1, 8):
-        breakfast = sung_menus[day-1].find_all('td')[1].get_text("\n").strip(),
-        lunch = sung_menus[day-1].find_all('td')[2].get_text("\n").strip(),
+        breakfast = sung_menus[day-1].find_all('td')[1].get_text("\n").strip()
+        lunch = sung_menus[day-1].find_all('td')[2].get_text("\n").strip()
         dinner = sung_menus[day-1].find_all('td')[3].get_text("\n").strip()
 
         sung = Yangsung(day=day, breakfast=breakfast, lunch=lunch, dinner=dinner)
