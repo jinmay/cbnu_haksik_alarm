@@ -1,4 +1,5 @@
-from django.contrib.staticfiles.templatetags.staticfiles import static
+import datetime
+from django.templatetags.static import static
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -31,6 +32,15 @@ def set_info(input_request):
     except Info.DoesNotExist:
         Info.objects.create(user_key=user_key, dorm=dorm)
     return
+
+def today_date():
+        year = datetime.datetime.now().year
+        month = datetime.datetime.now().month
+        day = datetime.datetime.now().day
+        date = datetime.datetime.now().weekday()
+        date_list = ('월', '화', '수', '목', '금', '토', '일')
+        today_str = "오늘은 {}년 {}월 {}일\n{}요일 입니다.".format(year, month, day, date_list[date])
+        return today_str
 
 @api_view(['POST'])
 def set_dorm(request):
@@ -73,7 +83,7 @@ def show_days(request):
             "outputs": [
                 {
                     "simpleText": {
-                        "text": "💁‍♀️요일을 선택해주세요"
+                        "text": "💁‍♀️요일을 선택해주세요\n\n" + today_date()
                     }
                 }
             ],
