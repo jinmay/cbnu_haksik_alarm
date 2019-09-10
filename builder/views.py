@@ -1,3 +1,4 @@
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -31,11 +32,6 @@ def set_info(input_request):
         Info.objects.create(user_key=user_key, dorm=dorm)
     return
 
-def get_info(input_request):
-    user_key = input_request.data["userRequest"]["user"]["properties"]["plusfriendUserKey"]
-    user = Info.objects.get(user_key=user_key)
-    return (user.user_key, user.dorm)
-
 @api_view(['POST'])
 def set_dorm(request):
     response = {
@@ -43,8 +39,11 @@ def set_dorm(request):
         "template": {
             "outputs": [
                 {
-                    "simpleText": {
-                        "text": "💁‍♀️기숙사를 선택해주세요"
+                    "basicCard": {
+                        "description": "💁‍♀️기숙사를 선택해주세요",
+                        "thumbnail": {
+                            "imageUrl": static('/builder/timetable.png')
+                        },
                     }
                 }
             ],
