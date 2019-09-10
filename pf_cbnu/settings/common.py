@@ -46,6 +46,7 @@ THRID_APPS = [
 ADDED_APPS = [
     'menus.apps.MenusConfig',
     'rn_api.apps.RnApiConfig',
+    'builder.apps.BuilderConfig',
 ]
 
 INSTALLED_APPS = DEFAULT_APPS + THRID_APPS + ADDED_APPS
